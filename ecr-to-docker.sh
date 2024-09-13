@@ -12,9 +12,6 @@ sed -i "s#<airgapped_reg>#$1#g" $tmp_file
 total_images=$(wc -l < "$tmp_file")
 echo "Total number of images to process: $total_images"
 
-echo "Logging in to the private registry..."
-echo $PRIVATE_REGISTRY_PASSWORD | docker login -u $PRIVATE_REGISTRY_USERNAME --password-stdin $1
-
 pushed_count=0
 
 while IFS= read -r line; do

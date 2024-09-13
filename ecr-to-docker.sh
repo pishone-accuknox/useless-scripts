@@ -5,7 +5,7 @@ PRIVATE_REGISTRY_PASSWORD=$PRIVATE_REGISTRY_PASSWORD
 
 tmp_file=$(mktemp)
 
-cp images.lst $tmp_file
+cp images.txt $tmp_file
 
 sed -i "s#<airgapped_reg>#$1#g" $tmp_file
 

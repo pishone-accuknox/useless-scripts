@@ -27,10 +27,18 @@ while IFS= read -r line; do
   echo "Pushing private image: $priv_img"
   docker push $priv_img
 
+  echo "Removing local image: $pub_img"
+  docker rmi $pub_img
+
+  echo "Removing local image: $priv_img"
+  docker rmi $priv_img
+
   pushed_count=$((pushed_count + 1))
   pending_count=$((total_images - pushed_count))
 
+  echo "========================================================================="
   echo "Pushed $pushed_count out of $total_images images. Pending: $pending_count"
+  echo "========================================================================="
 
 done < "$tmp_file"
 

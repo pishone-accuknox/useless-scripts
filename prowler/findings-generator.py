@@ -8,13 +8,12 @@ def generate_random_text(length=10):
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', k=length))
 
 def generate_unmapped():
-    frameworks = ["CIS", "NIST", "ISO", "SOC", "HIPAA", "PCI", "GDPR", "AWS"]
-    sections = [str(random.randint(1, 20)) + "." + str(random.randint(1, 10)) for _ in range(3)]
+    frameworks = ["CIS", "NIST", "ISO"]
     
     compliance = {}
-    for _ in range(random.randint(3, 8)):
-        framework = random.choice(frameworks) + "-" + str(random.randint(1, 5))
-        compliance[framework] = [f"{random.randint(1, 10)}.{random.randint(1, 10)}" for _ in range(random.randint(2, 5))]
+    for _ in range(random.randint(1, 3)):
+        framework = random.choice(frameworks) + "-" + str(random.randint(1, 3))
+        compliance[framework] = [f"{random.randint(1, 5)}.{random.randint(1, 5)}" for _ in range(random.randint(2, 5))]
     
     return {
         "related_url": f"https://{generate_random_text()}.com/{generate_random_text()}" if random.choice([True, False]) else "",
@@ -49,10 +48,10 @@ def generate_finding(resource, account_id):
     current_time_dt = datetime.now().isoformat()
     
     finding_title = f"Check if {generate_random_text(20)}"
-    event_code = f"{generate_random_text(10)}_{generate_random_text(5)}"
+    event_code = f"{generate_random_text(3)}_{generate_random_text(2)}"
     
     return {
-        "message": f"{generate_random_text(30)}",
+        "message": f"{generate_random_text(5)}",
         "metadata": {
             "event_code": event_code,
             "product": {
@@ -69,7 +68,7 @@ def generate_finding(resource, account_id):
         "severity": random.choice(["Critical", "High", "Medium", "Low"]),
         "status": random.choice(["New", "In Progress", "Resolved"]),
         "status_code": random.choice(["FAIL", "PASS", "MANUAL"]),
-        "status_detail": generate_random_text(50),
+        "status_detail": generate_random_text(5),
         "status_id": random.randint(1, 5),
         "unmapped": generate_unmapped(),
         "activity_name": "Create",
@@ -104,13 +103,13 @@ def generate_finding(resource, account_id):
             "region": resource["region"]
         },
         "remediation": {
-            "desc": generate_random_text(100),
+            "desc": generate_random_text(20),
             "references": [
                 f"aws {generate_random_text(10)} --{generate_random_text(8)} {generate_random_text(12)}",
                 f"https://{generate_random_text()}.com/{generate_random_text()}"
             ]
         },
-        "risk_details": generate_random_text(200),
+        "risk_details": generate_random_text(50),
         "time": current_time,
         "time_dt": current_time_dt,
         "type_uid": random.randint(200000, 300000),
@@ -129,14 +128,16 @@ def generate_account_findings(account_id, num_assets, findings_per_asset):
     return findings
 
 def main(num_files=3, assets_per_file=80000, findings_per_asset=3):
-    account_ids = [str(random.randint(100000000000, 999999999999)) for _ in range(num_files)]
+    # account_ids = [str(random.randint(100000000000, 999999999999)) for _ in range(num_files)]
+    account_ids = ["956994857092"]
     
     print(f"Generating {num_files} files with {assets_per_file} assets each")
     print(f"Each asset will have {findings_per_asset} findings")
     
     for account_id in account_ids:
         findings = generate_account_findings(account_id, assets_per_file, findings_per_asset)
-        filename = f"prowler-output-{account_id}.ocsf.json"
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = f"prowler-output-{account_id}-{timestamp}.ocsf.json"
         
         print(f"\nWriting {len(findings)} findings to {filename}")
         with open(filename, 'w') as f:
@@ -144,4 +145,4 @@ def main(num_files=3, assets_per_file=80000, findings_per_asset=3):
 
 if __name__ == "__main__":
 
-    main(num_files=2, assets_per_file=10000, findings_per_asset=1)
+    main(num_files=2, assets_per_file=15000, findings_per_asset=2)
